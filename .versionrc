@@ -1,0 +1,15 @@
+{
+  "types": [
+    { "type": "feat", "section":  "Features" },
+    { "type": "fix", "section": "Bug Fixes" },
+    { "type": "refactor", "section": "Refactored Code (Potential regression required)" },
+    { "type": "ci", "section": "CI/CD" },
+    { "type": "docs", "section": "Documentation Updates" },
+    { "type": "perf", "section": "Performance Improvements" },
+    { "type": "build", "section": "Build" }
+  ],
+  "commitUrlFormat": "{{host}}/{{owner}}/{{repository}}/commit/{{hash}}",
+  "issueUrlFormat": "https://servicevic.atlassian.net/browse/{{id}}",
+  "userUrlFormat": "{{host}}/{{user}}",
+  "compareUrlFormat": "{{host}}/{{owner}}/{{repository}}/compare/{{previousTag}}...{{currentTag}}"
+}
