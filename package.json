@@ -2,6 +2,11 @@
   "name": "@capturedlabs/real-life-cdk-typescript",
   "version": "0.1.0",
   "description": "a collection of CDK 2 demo projects in TypeScript",
+  "author": {
+    "name": "Chris Chen",
+    "email": "chris@capturedlabs.com",
+    "url": "https://github.com/chrischenyc/real-life-cdk-typescript"
+  },
   "private": true,
   "license": "BSD",
   "scripts": {

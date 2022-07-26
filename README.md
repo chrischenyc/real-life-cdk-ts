@@ -53,10 +53,10 @@ npm run deploy
 ```
 
 ```bash
-# will only deploy package @capturedlabs/container-based-rest-api-ecs
-npm run deploy --scope=@capturedlabs/container-based-rest-api-ecs
+# will only deploy package @capturedlabs/rest-api-container-ecs
+npm run deploy --scope=@capturedlabs/rest-api-container-ecs
 ```
 
 ## Projects
 
--   [Container-based REST API on ECS](./packages/container-based-rest-api-ecs/README.md)
+-   [Container-based REST API on ECS](./packages/rest-api-ecs/README.container-md)
