@@ -8,7 +8,7 @@ import { Construct } from 'constructs';
 
 import { BaseConstruct, BaseConstructProps } from './base-construct';
 
-export class WAFConstruct extends BaseConstruct {
+export class WafConstruct extends BaseConstruct {
     public waf?: wafv2.CfnWebACL;
 
     constructor(scope: Construct, id: string, props: BaseConstructProps) {

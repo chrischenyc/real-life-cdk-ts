@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /**
  * Entry point of CDK deployment.
  *
@@ -13,7 +11,7 @@ import 'dotenv/config';
 
 import * as cdk from 'aws-cdk-lib';
 
-import { ServerStack } from './server-stack';
+import { RestApiEcsStack } from './stack';
 
 const app = new cdk.App();
 
@@ -26,28 +24,30 @@ if (!process.env.AWS_ACCOUNT_DEPLOY) {
 if (!process.env.AWS_DEFAULT_REGION) {
     throw new Error('missing env var AWS_DEFAULT_REGION');
 }
-if (!process.env.PORT) {
-    throw new Error('missing env var process.env.PORT');
+if (!process.env.AWS_HOSTED_ZONE_DOMAIN) {
+    throw new Error('missing env var AWS_HOSTED_ZONE_DOMAIN');
 }
-if (!process.env.HOSTED_ZONE_DOMAIN) {
-    throw new Error('missing env var process.env.HOSTED_ZONE_DOMAIN');
+if (!process.env.PORT) {
+    throw new Error('missing env var PORT');
 }
 
-new ServerStack(app, `api-server-${process.env.ENV}`, {
-    stackName: `api-server-${process.env.ENV}`,
-    description: `API server ${process.env.ENV}`,
+new RestApiEcsStack(app, `rest-api-ecs-${process.env.ENV}`, {
+    stackName: `rest-api-ecs-${process.env.ENV}`,
+    description: `REST API server hosted on ECS - ${process.env.ENV}`,
     tags: {
         // tagging for AWS cost/billing
         Environment: process.env.ENV,
     },
     env: {
-        // env vars are injected during CI/CD runtime, see .gitlab-ci.yml
         // https://docs.aws.amazon.com/cdk/v2/guide/environments.html
         account: process.env.AWS_ACCOUNT_DEPLOY,
         region: process.env.AWS_DEFAULT_REGION,
     },
-
+    // Configure with APIs (properties, methods), not environment variables
+    // https://docs.aws.amazon.com/cdk/v2/guide/best-practices.html
     environment: process.env.ENV,
-    hostedZoneDomain: process.env.HOSTED_ZONE_DOMAIN,
     containerPort: process.env.PORT,
+    hostedZoneDomain: process.env.AWS_HOSTED_ZONE_DOMAIN,
+    vpcId: process.env.VPC_ID,
+    ecsClusterName: process.env.AWS_ECS_CLUSTER,
 });
