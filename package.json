@@ -15,7 +15,8 @@
     "commit": "git-cz",
     "test": "lerna run test --stream",
     "build": "lerna run build --stream",
-    "deploy": "lerna run deploy --stream"
+    "deploy": "lerna run deploy --stream",
+    "deploy:rest-api-ecs": "npm run deploy --scope=@capturedlabs/rest-api-ecs"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.0.3",
@@ -24,8 +25,11 @@
     "@types/node": "^18.6.1",
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
-    "aws-cdk": "^2.17.0",
+    "aws-cdk": "^2.23.0",
+    "aws-cdk-lib": "^2.33.0",
+    "constructs": "^10.1.58",
     "cz-conventional-changelog": "^3.3.0",
+    "dotenv": "^16.0.1",
     "eslint": "^8.11.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
@@ -38,7 +42,7 @@
     "typescript": "^4.6.2"
   },
   "workspaces": [
-    "packages/**"
+    "packages/*"
   ],
   "config": {
     "commitizen": {

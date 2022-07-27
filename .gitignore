@@ -24,6 +24,7 @@ cdk.out
 reports
 screenshots
 videos
+cdk.context.json
 
 # CACHE
 .yarn-offline-mirror
@@ -34,7 +35,6 @@ packages/**/.yarnrc
 packages/**/.npmrc
 packages/**/yarn.lock
 
-.dockerignore*
 *.tar*
 
 

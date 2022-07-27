@@ -10,8 +10,8 @@
         "noImplicitThis": true,
         "alwaysStrict": true,
         "noUnusedLocals": false,
-        "esModuleInterop": true,
         "noUnusedParameters": false,
+        "esModuleInterop": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": false,
         "inlineSourceMap": true,
@@ -21,5 +21,5 @@
         "typeRoots": ["./node_modules/@types"],
         "outDir": "dist"
     },
-    "include": ["./packages/**/*"]
+    "include": ["src"]
 }

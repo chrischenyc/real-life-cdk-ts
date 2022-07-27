@@ -1,33 +1,24 @@
 # Real life CDK TypeScript
 
-a collection of CDK 2 demo projects in TypeScript.
+A collection of CDK 2 demo projects in TypeScript.
 
--   [Overview](#overview)
+This is a monorepo managed by [lerna](https://lerna.js.org/). Each lerna package can be deployed to a standalone AWS CloudFormation stack.
+
 -   [Tech](#tech)
 -   [npm Scripts](#npm-scripts)
 -   [Manual Deployment](#manual-deployment)
+-   [Demo Projects](#demo-projects)
 -   [Contributing](CONTRIBUTING.md)
-
-## Overview
-
-This monorepo is managed by [lerna](https://lerna.js.org/).
-
-Each lerna package can be deployed as a standalone AWS CloudFormation stack.
-
-The Infra-as-Code is [AWS CDK 2](https://docs.aws.amazon.com/cdk/v2/guide/home.html) in TypeScript.
-
-The application code is in TypeScript too.
 
 ## Tech
 
--   node 16.x (see [.nvmrc](.nvmrc)):
+-   Node.js 16.x:
     -   AWS CDK requires Node.js [LTS releases](https://nodejs.org/en/about/releases/).
-    -   AWS Lambda Node.js runtime supports up to Node.js 16.x.
-    -   It's recommended to use [nvm](https://github.com/nvm-sh/nvm) tool to manage your local Node.js versions. For zsh users, plugin [zsh-nvm](https://github.com/lukechilds/zsh-nvm) can be handy.
--   npm
--   Typescript V3
--   AWS CDK V2
--   AWS SDK for JavaScript V3
+    -   [AWS Lambda runtime](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html) supports up to Node.js 16.x.
+    -   It's recommended to use [nvm](https://github.com/nvm-sh/nvm) to manage your local Node.js versions, see [.nvmrc](.nvmrc). For zsh users, plugin [zsh-nvm](https://github.com/lukechilds/zsh-nvm) can be handy.
+-   Typescript 4.x
+-   AWS CDK 2
+-   AWS SDK for JavaScript 3
 -   Prettier, ESlint, Commitlint, lint-staged
 -   Jest
 -   AWS services per system architecture diagrams
@@ -53,10 +44,10 @@ npm run deploy
 ```
 
 ```bash
-# will only deploy package @capturedlabs/rest-api-container-ecs
-npm run deploy --scope=@capturedlabs/rest-api-container-ecs
+# will only deploy package @capturedlabs/rest-api-ecs
+npm run deploy --scope=@capturedlabs/rest-api-ecs
 ```
 
-## Projects
+## Demo Projects
 
--   [Container-based REST API on ECS](./packages/rest-api-ecs/README.container-md)
+-   [Container-based REST API on ECS](./packages/rest-api-ecs/README.md)
