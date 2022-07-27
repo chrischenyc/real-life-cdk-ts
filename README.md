@@ -1,8 +1,8 @@
 # Real life CDK TypeScript
 
-A collection of CDK 2 demo projects in TypeScript.
+> A collection of CDK 2 demo projects in TypeScript, based off some projects I've done and lessons I've learned.
 
-This is a monorepo managed by [lerna](https://lerna.js.org/). Each lerna package can be deployed to a standalone AWS CloudFormation stack.
+## Contents
 
 -   [Tech](#tech)
 -   [npm Scripts](#npm-scripts)
@@ -12,6 +12,7 @@ This is a monorepo managed by [lerna](https://lerna.js.org/). Each lerna package
 
 ## Tech
 
+-   [lerna](https://lerna.js.org/): this is a monorepo managed learn.Each lerna package can be deployed as a standalone AWS CloudFormation stack.
 -   Node.js 16.x:
     -   AWS CDK requires Node.js [LTS releases](https://nodejs.org/en/about/releases/).
     -   [AWS Lambda runtime](https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html) supports up to Node.js 16.x.
@@ -27,27 +28,32 @@ This is a monorepo managed by [lerna](https://lerna.js.org/). Each lerna package
 
 List available npm scripts and their descriptions here.
 
--   `deploy`: deploy all or an individual service
 -   `lint`: lint codebase with ESlint
--   `lint:fix`: auto-fix ESLint errors
 -   `commit`: preferred way to create a git commit
 -   `test`: run unit tests
+-   `deploy`: deploy all projects
+-   `deploy:rest-api-ecs`: deploy [REST API on ECS with Fargate](#rest-api-on-ecs-with-fargate)
 
 ## Manual Deployment
 
--   ensure your command line has access to an AWS account. it is recommended to [configure AWS CLI to use AWS SSO](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html).
--   if you haven't, [bootstrap](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html) CDK in your AWS account.
+-   make sure your command line has sufficient access to the target AWS account. recommend [Configuring the AWS CLI to use AWS IAM Identity Center (successor to AWS Single Sign-On)](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html).
+
+-   [bootstrap](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html) CDK in the target AWS account, if it hasn't been done.
 
 ```bash
-# will deploy everything
+# deploy everything
 npm run deploy
 ```
 
 ```bash
-# will only deploy package @capturedlabs/rest-api-ecs
+# deploy package @capturedlabs/rest-api-ecs
 npm run deploy --scope=@capturedlabs/rest-api-ecs
 ```
 
 ## Demo Projects
 
--   [Container-based REST API on ECS](./packages/rest-api-ecs/README.md)
+### [REST API on ECS with Fargate](./packages/rest-api-ecs/README.md)
+
+![](./packages/rest-api-ecs/architecture.png)
+
+[how to deploy, or test the live demo](./packages/rest-api-ecs/README.md)

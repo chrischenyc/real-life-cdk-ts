@@ -1,12 +1,17 @@
-# Simple RESTful API server hosted on AWS ECS
+# [Express.js](https://expressjs.com/) REST API server hosted on [AWS ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html) with [Fargate](https://docs.aws.amazon.com/AmazonECS/latest/userguide/what-is-fargate.html)
 
--   [Overview](#overview)
+> A vanilla express.js project in TypeScript. It provides a few simple RESTful API endpoints for demonstration purpose, nothing fancy.
+
+## Contents
+
+-   [Solution Architecture](#solution-architecture)
 -   [Local Development](#local-development)
 -   [Manual Deployment](#manual-deployment)
+-   [Test Live Deployment](#test-live-deployment)
 
-## Overview
+## Solution Architecture
 
-This is a vanilla express.js project in TypeScript. For demonstration purpose, it provides a few simple RESTful API endpoints, nothing fancy.
+![](./architecture.png)
 
 ## Local Development
 
@@ -25,10 +30,45 @@ curl http://localhost:3000
 
 ## Manual Deployment
 
--   ensure your command line has access to an AWS account. it is recommended to [configure AWS CLI to use AWS SSO](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html).
--   if you haven't, [bootstrap](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html) CDK in your AWS account.
+-   make sure your command line has sufficient access to the target AWS account. recommend [Configuring the AWS CLI to use AWS IAM Identity Center (successor to AWS Single Sign-On)](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html).
+
+-   [bootstrap](https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html) CDK in the target AWS account, if it hasn't been done.
+
+-   create an `.env` file by duplicating `.env.template`, example:
+
+    ```env
+    AWS_ACCOUNT_DEPLOY=111222333444
+    AWS_DEFAULT_REGION=ap-southeast-2
+    AWS_HOSTED_ZONE_DOMAIN=dev.example.com
+    ENV=dev
+    PORT=3000
+    ```
+
+-   make sure the root domain (`dev.example.com` in the example .env file) has been hosted as a [Route53 public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html), and its NS records can be resolved on the public internet.
 
 ```bash
-# will deploy everything
-npm run deploy
+  npm install
+  npm run deploy
+```
+
+## Test Live Deployment
+
+> I'm hosting it in my personal AWS account, be mercy 🙈
+
+```bash
+# test deployed REST API GET /
+curl -i \
+-X GET \
+https://rest-api-ecs.dev.capturedlabs.com
+
+# expected output
+HTTP/2 200
+date: Wed, 27 Jul 2022 21:29:50 GMT
+content-type: application/json; charset=utf-8
+content-length: 31
+x-powered-by: Express
+access-control-allow-origin: *
+etag: W/"1f-grMtbL5VYulNqAmFyqX/2Lp3EyY"
+
+{"message":"server is up 🚀"}
 ```
