@@ -37,8 +37,8 @@ curl http://localhost:3000
 -   create an `.env` file by duplicating `.env.template`, example:
 
     ```env
-    AWS_ACCOUNT_DEPLOY=111222333444
-    AWS_DEFAULT_REGION=ap-southeast-2
+    AWS_ACCOUNT=111222333444
+    AWS_REGION=ap-southeast-2
     AWS_HOSTED_ZONE_DOMAIN=dev.example.com
     ENV=dev
     PORT=3000

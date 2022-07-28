@@ -18,11 +18,11 @@ const app = new cdk.App();
 if (!process.env.ENV) {
     throw new Error('missing env var ENV');
 }
-if (!process.env.AWS_ACCOUNT_DEPLOY) {
-    throw new Error('missing env var AWS_ACCOUNT_DEPLOY');
+if (!process.env.AWS_ACCOUNT) {
+    throw new Error('missing env var AWS_ACCOUNT');
 }
-if (!process.env.AWS_DEFAULT_REGION) {
-    throw new Error('missing env var AWS_DEFAULT_REGION');
+if (!process.env.AWS_REGION) {
+    throw new Error('missing env var AWS_REGION');
 }
 if (!process.env.AWS_HOSTED_ZONE_DOMAIN) {
     throw new Error('missing env var AWS_HOSTED_ZONE_DOMAIN');
@@ -40,8 +40,8 @@ new RestApiEcsStack(app, `rest-api-ecs-${process.env.ENV}`, {
     },
     env: {
         // https://docs.aws.amazon.com/cdk/v2/guide/environments.html
-        account: process.env.AWS_ACCOUNT_DEPLOY,
-        region: process.env.AWS_DEFAULT_REGION,
+        account: process.env.AWS_ACCOUNT,
+        region: process.env.AWS_REGION,
     },
     // Configure with APIs (properties, methods), not environment variables
     // https://docs.aws.amazon.com/cdk/v2/guide/best-practices.html
