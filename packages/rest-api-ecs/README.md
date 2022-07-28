@@ -1,6 +1,6 @@
 # [Express.js](https://expressjs.com/) REST API server hosted on [AWS ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html) with [Fargate](https://docs.aws.amazon.com/AmazonECS/latest/userguide/what-is-fargate.html)
 
-> A vanilla express.js project in TypeScript. It provides a few simple RESTful API endpoints for demonstration purpose, nothing fancy.
+> A vanilla express.js project in TypeScript. It provides a few simple RESTful API endpoints for demonstration purposes, nothing fancy.
 
 ## Contents
 
@@ -53,7 +53,7 @@ curl http://localhost:3000
 
 ## Test Live Deployment
 
-> I'm hosting it in my personal AWS account, be mercy 🙈
+> I'm hosting it in my personal AWS account, be merciful 🙈
 
 ```bash
 # test deployed REST API GET /
