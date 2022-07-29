@@ -11,8 +11,12 @@
         "deploy": "cdk deploy --require-approval=never --progress=events"
     },
     "dependencies": {
+        "@aws-sdk/client-dynamodb": "^3.137.0",
+        "@aws-sdk/lib-dynamodb": "^3.137.0",
         "cors": "^2.8.5",
         "express": "^4.18.1",
+        "express-joi-validation": "^5.0.1",
+        "joi": "^17.6.0",
         "morgan": "^1.10.0"
     },
     "devDependencies": {

@@ -3,6 +3,7 @@
  */
 
 import * as certificatemanager from 'aws-cdk-lib/aws-certificatemanager';
+import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ecsPatterns from 'aws-cdk-lib/aws-ecs-patterns';
@@ -18,13 +19,15 @@ interface EcsConstructProps extends BaseConstructProps {
     readonly waf?: wafv2.CfnWebACL;
     readonly ecsClusterName?: string;
     readonly vpcId?: string;
+    readonly dynamodbTable: dynamodb.Table;
+    readonly reversedGSIName: string;
 }
 
 export class EcsConstruct extends BaseConstruct {
     constructor(scope: Construct, id: string, props: EcsConstructProps) {
         super(scope, id, props);
 
-        const { hostedZoneDomain, containerPort, waf, ecsClusterName, vpcId } = props;
+        const { hostedZoneDomain, containerPort, waf, ecsClusterName, vpcId, dynamodbTable, reversedGSIName } = props;
 
         // API base url is a subdomain of the given hosted zone root domain
         // example: for a hosted zone domain example.com, the generated API base url is rest-api-ecs.example.com
@@ -66,41 +69,50 @@ export class EcsConstruct extends BaseConstruct {
               });
 
         //   ECS service, task definition, ALB, etc
-        const { loadBalancer } = new ecsPatterns.ApplicationLoadBalancedFargateService(this, 'ecs-service-alb', {
-            serviceName: this.stackName,
-            cluster: ecsCluster,
+        const { loadBalancer, taskDefinition } = new ecsPatterns.ApplicationLoadBalancedFargateService(
+            this,
+            'ecs-service-alb',
+            {
+                serviceName: this.stackName,
+                cluster: ecsCluster,
 
-            // ECS task definition
-            taskImageOptions: {
-                image: ecs.ContainerImage.fromAsset('./', {
-                    buildArgs: {
-                        // $PORT is used in Dockerfile
+                // ECS task definition
+                taskImageOptions: {
+                    image: ecs.ContainerImage.fromAsset('./', {
+                        buildArgs: {
+                            // $PORT is used in Dockerfile
+                            PORT: containerPort,
+                        },
+                    }),
+                    containerName: 'api-server',
+                    containerPort: parseInt(containerPort),
+                    environment: {
                         PORT: containerPort,
+                        DYNAMODB_TABLE_NAME: dynamodbTable.tableName,
+                        DYNAMODB_REVERSED_GSI_NAME: reversedGSIName,
                     },
-                }),
-                containerName: 'api-server',
-                containerPort: parseInt(containerPort),
-                environment: {
-                    PORT: containerPort,
                 },
-            },
 
-            // deployment characteristics
-            circuitBreaker: {
-                rollback: true,
-            },
+                // deployment characteristics
+                circuitBreaker: {
+                    rollback: true,
+                },
 
-            // TODO: scaling, fine-tune PROD config
-            desiredCount: this.isProd ? 2 : 1,
-            cpu: this.isProd ? 512 : 256,
-            memoryLimitMiB: this.isProd ? 1024 : 512,
+                // TODO: scaling, fine-tune PROD config
+                desiredCount: this.isProd ? 2 : 1,
+                cpu: this.isProd ? 512 : 256,
+                memoryLimitMiB: this.isProd ? 1024 : 512,
 
-            // ALB custom domain and TLS cert
-            domainName: apiDomain,
-            domainZone: domainZone,
-            certificate: apiDomainCert,
-            loadBalancerName: this.stackName,
-        });
+                // ALB custom domain and TLS cert
+                domainName: apiDomain,
+                domainZone: domainZone,
+                certificate: apiDomainCert,
+                loadBalancerName: this.stackName,
+            }
+        );
+
+        // grant ECS task permissions to access AWS resources, such as DynamoDB table
+        dynamodbTable.grantReadWriteData(taskDefinition.taskRole);
 
         // guard ALB with available WAF rules, which are defined on the account level
         if (waf) {
