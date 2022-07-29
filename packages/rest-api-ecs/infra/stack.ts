@@ -5,6 +5,7 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
+import { DynamoDBConstruct } from './dynamodb-construct';
 import { EcsConstruct } from './ecs-construct';
 import { WafConstruct } from './waf-construct';
 
@@ -24,6 +25,8 @@ export class RestApiEcsStack extends Stack {
 
         const { waf } = new WafConstruct(this, 'waf-construct', { environment });
 
+        const { dynamodbTable, reversedGSIName } = new DynamoDBConstruct(this, 'dynamodb-construct', { environment });
+
         new EcsConstruct(this, 'ecs-construct', {
             environment,
             hostedZoneDomain,
@@ -31,6 +34,8 @@ export class RestApiEcsStack extends Stack {
             waf,
             ecsClusterName,
             vpcId,
+            dynamodbTable,
+            reversedGSIName,
         });
     }
 }
