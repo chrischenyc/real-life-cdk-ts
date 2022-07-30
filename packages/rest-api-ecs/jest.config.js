@@ -100,13 +100,13 @@ module.exports = {
     // notifyMode: "failure-change",
 
     // A preset that is used as a base for Jest's configuration
-    // preset: undefined,
+    preset: 'ts-jest',
 
     // Run tests from one or more projects
     // projects: undefined,
 
     // Use this configuration option to add custom reporters to Jest
-    // reporters: undefined,
+    reporters: ['default', ['jest-junit', { outputDirectory: 'coverage', outputName: 'junit.xml' }]],
 
     // Automatically reset mock state before every test
     // resetMocks: false,
