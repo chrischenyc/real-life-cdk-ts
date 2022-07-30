@@ -58,4 +58,4 @@ npm run deploy --scope=@capturedlabs/rest-api-ecs
 
     ![](./packages/rest-api-ecs/architecture.png)
 
-    [test the live demo](./packages/rest-api-ecs/README.md#test-live-deployment)
+    [test the live demo](./packages/rest-api-ecs/README.md#live-api-endpoints)

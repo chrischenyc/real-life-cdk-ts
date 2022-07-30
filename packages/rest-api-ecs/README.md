@@ -7,7 +7,8 @@
 -   [Solution Architecture](#solution-architecture)
 -   [Local Development](#local-development)
 -   [Manual Deployment](#manual-deployment)
--   [Test Live Deployment](#test-live-deployment)
+-   [Live API Endpoints](#live-api-endpoints)
+-   [Database Schema](#database-schema)
 
 ## Solution Architecture
 
@@ -53,7 +54,7 @@ curl http://localhost:3000
   npm run deploy
 ```
 
-## Test Live Deployment
+## Live API Endpoints
 
 > I'm hosting it in my personal AWS account, be merciful 🙈
 
@@ -84,3 +85,9 @@ https://rest-api-ecs.dev.capturedlabs.com/users/marten
 # {"username":"marten","email":"mtrendle2@umich.edu","fullName":"Marten Trendle","address":"4 La Follette Pass"}
 
 ```
+
+## Database Schema
+
+To make things simple, I borrowed the example single table design from Alex Debrie's blog [The What, Why, and When of Single-Table Design with DynamoDB](https://www.alexdebrie.com/posts/dynamodb-single-table/). Choosing underlying database service is not the concern of this demo project. DynamoDB is chosen because of its on-demand pricing model.
+
+![](https://user-images.githubusercontent.com/6509926/73772626-1e4f0780-4746-11ea-84f4-1490119d7cd6.png)
