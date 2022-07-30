@@ -13,6 +13,8 @@
 
 ![](./architecture.png)
 
+diagram raw file (draw.io format): [https://drive.google.com/file/d/1mlh_tGtY4NF3XTauX2NC_HOkPyb775gI/view?usp=sharing](https://drive.google.com/file/d/1mlh_tGtY4NF3XTauX2NC_HOkPyb775gI/view?usp=sharing)
+
 ## Local Development
 
 ```bash
@@ -56,19 +58,29 @@ curl http://localhost:3000
 > I'm hosting it in my personal AWS account, be merciful 🙈
 
 ```bash
-# test deployed REST API GET /
-curl -i \
--X GET \
+# GET / - health check
+curl -X GET \
 https://rest-api-ecs.dev.capturedlabs.com
+# expected output:
+# {"message":"server is up 🚀"}
 
-# expected output
-HTTP/2 200
-date: Wed, 27 Jul 2022 21:29:50 GMT
-content-type: application/json; charset=utf-8
-content-length: 31
-x-powered-by: Express
-access-control-allow-origin: *
-etag: W/"1f-grMtbL5VYulNqAmFyqX/2Lp3EyY"
+# POST /users - create a user
+curl -X POST \
+-H "Content-Type: application/json" \
+-d '{"username":"marten", "fullName": "Marten Trendle", "email": "mtrendle2@umich.edu"}' \
+https://rest-api-ecs.dev.capturedlabs.com/users
 
-{"message":"server is up 🚀"}
+# PATCH /users - update a user
+curl -X PATCH \
+-H "Content-Type: application/json" \
+-d '{"address":"4 La Follette Pass"}' \
+https://rest-api-ecs.dev.capturedlabs.com/users/marten
+
+# PATCH /users - get a user
+curl -X GET \
+https://rest-api-ecs.dev.capturedlabs.com/users/marten
+
+# expected output:
+# {"username":"marten","email":"mtrendle2@umich.edu","fullName":"Marten Trendle","address":"4 La Follette Pass"}
+
 ```
