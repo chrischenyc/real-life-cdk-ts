@@ -3,6 +3,7 @@
 > A collection of CDK 2 demo projects in TypeScript, based off some projects I've done and lessons I've learned.
 
 [![ci/cd](https://github.com/chrischenyc/real-life-cdk-typescript/actions/workflows/cicd.yml/badge.svg)](https://github.com/chrischenyc/real-life-cdk-typescript/actions/workflows/cicd.yml)
+[![codecov](https://codecov.io/gh/chrischenyc/real-life-cdk-typescript/branch/main/graph/badge.svg?token=l0SHtYGbgh)](https://codecov.io/gh/chrischenyc/real-life-cdk-typescript)
 
 ## Contents
 

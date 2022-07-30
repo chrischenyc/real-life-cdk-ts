@@ -1,0 +1,36 @@
+# This workflow will upload unit test coverage reports to codecov
+
+name: codecov
+
+on:
+  push:
+    branches:
+      - main
+
+# Allow a subsequently queued workflow run to interrupt previous runs
+concurrency:
+  group: ${{ github.workflow }} @ ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  codecov:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: npm
+
+      - name: Dependencies
+        run: npm ci
+
+      - name: Unit Test
+        run: npm test
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3

@@ -21,5 +21,6 @@
         "typeRoots": ["./node_modules/@types"],
         "outDir": "dist"
     },
-    "include": ["./packages/**/*"]
+    "include": ["./packages/**/*"],
+    "exclude": ["node_modules", "**/*.spec.ts"]
 }
