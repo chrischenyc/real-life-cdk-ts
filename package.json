@@ -14,6 +14,7 @@
     "lint:fix": "eslint packages --fix",
     "commit": "cz",
     "test": "lerna run test --stream",
+    "test:integration": "lerna run test:integration --stream",
     "build": "lerna run build --stream",
     "deploy": "lerna run deploy --stream",
     "deploy:rest-api-ecs": "npm run deploy --scope=@capturedlabs/rest-api-ecs",
