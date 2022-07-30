@@ -2,7 +2,7 @@
  * Implementation of UserStore interface, uses DynamoDB as the underlying datastore mechanism
  */
 
-import { ConditionalCheckFailedException, DynamoDBServiceException } from '@aws-sdk/client-dynamodb';
+import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 
 import { User, UserStore } from './user-store';
@@ -27,14 +27,12 @@ export class UserStoreDynamoDB implements UserStore {
                         SK: `#PROFILE#${username}`,
                         ...rest,
                     },
+                    ConditionExpression: 'attribute_not_exists(PK) and attribute_not_exists(SK)',
                 })
             );
         } catch (error) {
             if (error instanceof ConditionalCheckFailedException) {
-                throw 'username exists';
-            }
-            if (error instanceof DynamoDBServiceException) {
-                throw error.message;
+                throw new Error('username exists');
             }
 
             throw error;
@@ -42,32 +40,24 @@ export class UserStoreDynamoDB implements UserStore {
     }
 
     async getUser(username: string): Promise<User | undefined> {
-        try {
-            const { Item } = await this.ddbDocClient.send(
-                new GetCommand({
-                    TableName: this.tableName,
-                    Key: {
-                        PK: `USER#${username}`,
-                        SK: `#PROFILE#${username}`,
-                    },
-                })
-            );
+        const { Item } = await this.ddbDocClient.send(
+            new GetCommand({
+                TableName: this.tableName,
+                Key: {
+                    PK: `USER#${username}`,
+                    SK: `#PROFILE#${username}`,
+                },
+            })
+        );
 
-            return (
-                Item && {
-                    username,
-                    email: Item.email,
-                    fullName: Item.fullName,
-                    address: Item.address,
-                }
-            );
-        } catch (error) {
-            if (error instanceof DynamoDBServiceException) {
-                throw error.message;
+        return (
+            Item && {
+                username,
+                email: Item.email,
+                fullName: Item.fullName,
+                address: Item.address,
             }
-
-            throw error;
-        }
+        );
     }
 
     async updateUser(username: string, props: { fullName?: string; email?: string; address?: string }): Promise<void> {
@@ -100,11 +90,7 @@ export class UserStoreDynamoDB implements UserStore {
             await this.ddbDocClient.send(updateCommand);
         } catch (error) {
             if (error instanceof ConditionalCheckFailedException) {
-                throw 'username not found';
-            }
-
-            if (error instanceof DynamoDBServiceException) {
-                throw error.message;
+                throw new Error('username not found');
             }
 
             throw error;
