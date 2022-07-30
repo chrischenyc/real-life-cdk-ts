@@ -28,6 +28,7 @@ export class DynamoDBConstruct extends BaseConstruct {
                 type: dynamodb.AttributeType.STRING,
             },
             pointInTimeRecovery: this.isProd,
+            billingMode: dynamodb.BillingMode.PAY_PER_REQUEST,
         });
 
         this.reversedGSIName = 'pk-sk-reversed';
