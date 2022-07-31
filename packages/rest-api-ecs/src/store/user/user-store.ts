@@ -19,7 +19,7 @@ export interface User {
 
 export interface UserStore {
     createUser(user: User): Promise<void>;
-    getUser(username: string): Promise<User | undefined>;
+    getUser(username: string): Promise<User>;
     updateUser(username: string, props: { fullName?: string; email?: string; address?: string }): Promise<void>;
 }
 

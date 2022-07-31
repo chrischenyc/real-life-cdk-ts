@@ -1,7 +1,9 @@
 import express from 'express';
 import { createValidator } from 'express-joi-validation';
+import httpStatus from 'http-status';
 import Joi from 'joi';
 
+import { APIError } from '../common/api-error';
 import { userStore } from '../store/user/user-store';
 
 export const users = express.Router();
@@ -21,9 +23,14 @@ users.post(
     async (req, res) => {
         try {
             await userStore.createUser(req.body);
-            res.status(201).send();
+
+            res.status(httpStatus.CREATED).json({ message: 'user created' });
         } catch (error) {
-            res.status(500).json({ error });
+            if (error instanceof APIError) {
+                res.status(error.httpStatus).json({ message: error.message });
+            } else {
+                res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
+            }
         }
     }
 );
@@ -32,9 +39,13 @@ users.post(
 users.get('/:username', validator.params(Joi.object({ username: Joi.string().required() })), async (req, res) => {
     try {
         const user = await userStore.getUser(req.params.username);
-        user ? res.json(user) : res.status(404).json({ error: `username ${req.params.username} not found` });
+        res.json(user);
     } catch (error) {
-        res.status(501).json({ error });
+        if (error instanceof APIError) {
+            res.status(error.httpStatus).json({ message: error.message });
+        } else {
+            res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
+        }
     }
 });
 
@@ -52,9 +63,14 @@ users.patch(
     async (req, res) => {
         try {
             await userStore.updateUser(req.params.username, req.body);
-            res.status(200).send();
+
+            res.status(httpStatus.OK).json({ message: 'user updated' });
         } catch (error) {
-            res.status(501).json({ error });
+            if (error instanceof APIError) {
+                res.status(error.httpStatus).json({ message: error.message });
+            } else {
+                res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ message: error });
+            }
         }
     }
 );
