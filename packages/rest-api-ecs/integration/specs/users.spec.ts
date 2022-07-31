@@ -1,7 +1,7 @@
 import axios from 'axios';
 import randomstring from 'randomstring';
 
-import { getDynamoDBItemWithRetry, removeDynamoDBItemsWithKeys } from './utils/dynamodb';
+import { getDynamoDBItemWithRetry, removeDynamoDBItemsWithKeys } from '../utils/dynamodb';
 
 describe('users CRUD APIs', () => {
     const username = randomstring.generate(8);
@@ -45,13 +45,14 @@ describe('users CRUD APIs', () => {
         });
 
         test('should create a new user with a valid payload', async () => {
-            const { status } = await axios.post('/users', {
+            const response = await axios.post('/users', {
                 username,
                 fullName: 'Integration Test',
                 email: 'test@example.com',
             });
 
-            expect(status).toEqual(201);
+            expect(response.status).toEqual(201);
+            expect(response.data).toEqual({ message: 'user created' });
 
             // test desired impact on downstream resources
             const dynamodbRecord = await getDynamoDBItemWithRetry({
@@ -68,6 +69,18 @@ describe('users CRUD APIs', () => {
                 fullName: 'Integration Test',
             });
         });
+
+        test('should return error or an existing username', async () => {
+            // repeat previous successful payload
+            const response = await axios.post('/users', {
+                username,
+                fullName: 'Integration Test',
+                email: 'test@example.com',
+            });
+
+            expect(response.status).toEqual(400);
+            expect(response.data).toEqual({ message: 'username exists' });
+        });
     });
 
     describe('PATCH /users/:username', () => {
@@ -76,16 +89,17 @@ describe('users CRUD APIs', () => {
                 address: 'Mars',
             });
 
-            expect(response.status).toEqual(501);
-            expect(response.data).toEqual({ error: 'username not found' });
+            expect(response.status).toEqual(404);
+            expect(response.data).toEqual({ message: 'username not found' });
         });
 
         test('should update an existing user with a valid payload', async () => {
-            const { status } = await axios.patch(`/users/${username}`, {
+            const response = await axios.patch(`/users/${username}`, {
                 address: 'Mars',
             });
 
-            expect(status).toEqual(200);
+            expect(response.status).toEqual(200);
+            expect(response.data).toEqual({ message: 'user updated' });
 
             // test desired impact on downstream resources
             const dynamodbRecord = await getDynamoDBItemWithRetry({
@@ -110,14 +124,14 @@ describe('users CRUD APIs', () => {
             const response = await axios.get('/users/non-existent');
 
             expect(response.status).toEqual(404);
-            expect(response.data).toEqual({ error: 'username non-existent not found' });
+            expect(response.data).toEqual({ message: 'username not found' });
         });
 
         test('should find an existing user with a valid username', async () => {
-            const { status, data } = await axios.get(`/users/${username}`);
+            const response = await axios.get(`/users/${username}`);
 
-            expect(status).toEqual(200);
-            expect(data).toEqual({
+            expect(response.status).toEqual(200);
+            expect(response.data).toEqual({
                 username,
                 fullName: 'Integration Test',
                 email: 'test@example.com',

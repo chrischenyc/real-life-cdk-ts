@@ -4,7 +4,9 @@
 
 import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import httpStatus from 'http-status';
 
+import { APIError } from '../../common/api-error';
 import { User, UserStore } from './user-store';
 
 export class UserStoreDynamoDB implements UserStore {
@@ -32,32 +34,42 @@ export class UserStoreDynamoDB implements UserStore {
             );
         } catch (error) {
             if (error instanceof ConditionalCheckFailedException) {
-                throw new Error('username exists');
+                throw new APIError('username exists', httpStatus.BAD_REQUEST);
             }
 
-            throw error;
+            throw new APIError(`cannot create user. ${error}`, httpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    async getUser(username: string): Promise<User | undefined> {
-        const { Item } = await this.ddbDocClient.send(
-            new GetCommand({
-                TableName: this.tableName,
-                Key: {
-                    PK: `USER#${username}`,
-                    SK: `#PROFILE#${username}`,
-                },
-            })
-        );
+    async getUser(username: string): Promise<User> {
+        try {
+            const { Item } = await this.ddbDocClient.send(
+                new GetCommand({
+                    TableName: this.tableName,
+                    Key: {
+                        PK: `USER#${username}`,
+                        SK: `#PROFILE#${username}`,
+                    },
+                })
+            );
 
-        return (
-            Item && {
+            if (!Item) {
+                throw new APIError('username not found', httpStatus.NOT_FOUND);
+            }
+
+            return {
                 username,
                 email: Item.email,
                 fullName: Item.fullName,
                 address: Item.address,
+            };
+        } catch (error) {
+            if (error instanceof APIError) {
+                throw error;
             }
-        );
+
+            throw new APIError(`cannot find user: ${JSON.stringify(error)}`, httpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     async updateUser(username: string, props: { fullName?: string; email?: string; address?: string }): Promise<void> {
@@ -90,10 +102,10 @@ export class UserStoreDynamoDB implements UserStore {
             await this.ddbDocClient.send(updateCommand);
         } catch (error) {
             if (error instanceof ConditionalCheckFailedException) {
-                throw new Error('username not found');
+                throw new APIError('username not found', httpStatus.NOT_FOUND);
             }
 
-            throw error;
+            throw new APIError(`cannot update user. ${error}`, httpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

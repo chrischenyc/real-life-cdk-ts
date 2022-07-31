@@ -14,7 +14,7 @@ app.use(cors());
 // GET /
 // health check, monitored by container hosting service such as AWS ECS
 app.get('/', (_req, res) => {
-    res.status(200).json({ message: 'server is up 🚀' });
+    res.json({ message: 'server is up 🚀' });
 });
 
 app.use(morgan('tiny'));

@@ -1,7 +1,9 @@
 import { ConditionalCheckFailedException, DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, GetCommandOutput, PutCommandOutput, UpdateCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, GetCommandOutput } from '@aws-sdk/lib-dynamodb';
+import httpStatus from 'http-status';
 import { mockClient } from 'jest-aws-client-mock';
 
+import { APIError } from '../../common/api-error';
 import { UserStoreDynamoDB } from './user-store-dynamodb';
 
 const ddbMock = mockClient(DynamoDBDocumentClient);
@@ -51,11 +53,11 @@ describe('UserStoreDynamoDB', () => {
                     email: 'test@example.com',
                     fullName: 'Unit Test',
                 })
-            ).rejects.toThrow('username exists');
+            ).rejects.toThrow(new APIError('username exists', httpStatus.BAD_REQUEST));
         });
 
         test('should throw other error as is', async () => {
-            ddbMock.mockRejectedValue('error');
+            ddbMock.mockRejectedValue('some other error');
 
             await expect(
                 store.createUser({
@@ -63,7 +65,9 @@ describe('UserStoreDynamoDB', () => {
                     email: 'test@example.com',
                     fullName: 'Unit Test',
                 })
-            ).rejects.toThrow('error');
+            ).rejects.toThrow(
+                new APIError('cannot create user. Error: some other error', httpStatus.INTERNAL_SERVER_ERROR)
+            );
         });
     });
 
@@ -102,14 +106,15 @@ describe('UserStoreDynamoDB', () => {
             });
         });
 
-        test('should return undefined if no matching DynamoDB item', async () => {
+        test('should throw not found error if no matching DynamoDB item', async () => {
             const output: Partial<GetCommandOutput> = {
                 Item: undefined,
             };
             ddbMock.mockResolvedValue(output);
 
-            const result = await store.getUser('unittest');
-            expect(result).toBeUndefined();
+            await expect(store.getUser('unittest')).rejects.toThrow(
+                new APIError('username not found', httpStatus.NOT_FOUND)
+            );
         });
     });
 
@@ -150,17 +155,19 @@ describe('UserStoreDynamoDB', () => {
                 store.updateUser('unittest', {
                     email: 'test2@example.com',
                 })
-            ).rejects.toThrow('username not found');
+            ).rejects.toThrow(new APIError('username not found', httpStatus.NOT_FOUND));
         });
 
         test('should throw other error as is', async () => {
-            ddbMock.mockRejectedValue('error');
+            ddbMock.mockRejectedValue('some other error');
 
             await expect(
                 store.updateUser('unittest', {
                     email: 'test2@example.com',
                 })
-            ).rejects.toThrow('error');
+            ).rejects.toThrow(
+                new APIError('cannot update user. Error: some other error', httpStatus.INTERNAL_SERVER_ERROR)
+            );
         });
     });
 });
