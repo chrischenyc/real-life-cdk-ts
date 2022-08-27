@@ -1,4 +1,4 @@
-# Simple REST API server powered by [AWS ECS](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html) with [Fargate](https://docs.aws.amazon.com/AmazonECS/latest/userguide/what-is-fargate.html)
+# Simple REST API server powered by AWS Serverless services
 
 > A vanilla express.js project in TypeScript. It provides a few simple RESTful API endpoints for demonstration purposes, nothing fancy.
 
@@ -18,18 +18,7 @@ diagram raw file (draw.io format): [https://drive.google.com/file/d/1mlh_tGtY4NF
 
 ## Local Development
 
-```bash
-# build the latest docker image, expose port 3000
-docker build -t api-server:latest --build-arg PORT=3000 .
-
-# run the docker image
-docker run -d --rm --env-file .env -p 3000:3000 api-server:latest
-
-# test GET /
-curl http://localhost:3000
-
-# you should see {"message":"server is up 🚀"}
-```
+TODO: use [LocalStack](https://github.com/localstack/localstack) for local development
 
 ## Manual Deployment
 
@@ -44,14 +33,14 @@ curl http://localhost:3000
     AWS_REGION=ap-southeast-2
     AWS_HOSTED_ZONE_DOMAIN=dev.example.com
     ENV=dev
-    PORT=3000
+    AWS_SECRETS_MANAGER_API_KEY_SECRET=rest-api-serverless-dev/api-key #optional
     ```
 
 -   make sure the root domain (`dev.example.com` in the example .env file) has been hosted as a [Route53 public hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/AboutHZWorkingWith.html), and its NS records can be resolved on the public internet.
 
 ```bash
   npm install
-  npx lerna run deploy --scope=@capturedlabs/rest-api-ecs
+  npx lerna run deploy --scope=@capturedlabs/rest-api-serverless
 ```
 
 ## Live API Endpoints
@@ -61,25 +50,27 @@ curl http://localhost:3000
 ```bash
 # GET / - health check
 curl -X GET \
-https://rest-api-ecs.dev.capturedlabs.com
+https://rest-api-serverless.dev.capturedlabs.com/health
 # expected output:
 # {"message":"server is up 🚀"}
 
 # POST /users - create a user
 curl -X POST \
 -H "Content-Type: application/json" \
+-H "x-api-key: 5bU77uF*sHWga2lf9023=jl" \
 -d '{"username":"marten", "fullName": "Marten Trendle", "email": "mtrendle2@umich.edu"}' \
-https://rest-api-ecs.dev.capturedlabs.com/users
+https://rest-api-serverless.dev.capturedlabs.com/users
 
 # PATCH /users/:username - update a user
 curl -X PATCH \
 -H "Content-Type: application/json" \
+-H "x-api-key: 5bU77uF*sHWga2lf9023=jl" \
 -d '{"address":"4 La Follette Pass"}' \
-https://rest-api-ecs.dev.capturedlabs.com/users/marten
+https://rest-api-serverless.dev.capturedlabs.com/users/marten
 
 # GET /users/:username - get a user
 curl -X GET \
-https://rest-api-ecs.dev.capturedlabs.com/users/marten
+https://rest-api-serverless.dev.capturedlabs.com/users/marten
 
 # expected output:
 # {"username":"marten","email":"mtrendle2@umich.edu","fullName":"Marten Trendle","address":"4 La Follette Pass"}

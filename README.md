@@ -2,8 +2,9 @@
 
 > A collection of CDK 2 demo projects in TypeScript, based off some projects I've done and lessons I've learned.
 
-[![ci/cd](https://github.com/chrischenyc/real-life-cdk-typescript/actions/workflows/cicd.yml/badge.svg)](https://github.com/chrischenyc/real-life-cdk-typescript/actions/workflows/cicd.yml)
 [![codecov](https://codecov.io/gh/chrischenyc/real-life-cdk-typescript/branch/main/graph/badge.svg?token=l0SHtYGbgh)](https://codecov.io/gh/chrischenyc/real-life-cdk-typescript)
+[![rest-api-ecs](https://github.com/chrischenyc/real-life-cdk-typescript/actions/workflows/rest-api-ecs.yml/badge.svg)](https://github.com/chrischenyc/real-life-cdk-typescript/actions/workflows/rest-api-ecs.yml)
+[![rest-api-serverless](https://github.com/chrischenyc/real-life-cdk-typescript/actions/workflows/rest-api-serverless.yml/badge.svg)](https://github.com/chrischenyc/real-life-cdk-typescript/actions/workflows/rest-api-serverless.yml)
 
 ## Contents
 
@@ -50,13 +51,18 @@ npm run deploy
 
 ```bash
 # deploy package @capturedlabs/rest-api-ecs
-npm run deploy --scope=@capturedlabs/rest-api-ecs
+npx lerna run deploy --scope=@capturedlabs/rest-api-ecs
+
+# deploy package @capturedlabs/rest-api-serverless
+npx lerna run deploy --scope=@capturedlabs/rest-api-serverless
 ```
 
 ## Demo Projects
 
--   [REST API on ECS with Fargate](./packages/rest-api-ecs/README.md)
+-   [REST API powered by AWS ECS with Fargate](./packages/rest-api-ecs/README.md)
 
     ![](./packages/rest-api-ecs/architecture.png)
 
-    [test the live demo](./packages/rest-api-ecs/README.md#live-api-endpoints)
+-   [REST API powered by AWS Serverless](./packages/rest-api-serverless/README.md)
+
+    ![](./packages/rest-api-serverless/architecture.png)
