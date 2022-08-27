@@ -1,6 +1,6 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, lint then build the source code, and run unit tests
 
-name: ci/cd
+name: rest-api-serverless
 
 on:
   pull_request:
@@ -58,7 +58,7 @@ jobs:
       AWS_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
       AWS_HOSTED_ZONE_DOMAIN: dev.capturedlabs.com
       ENV: dev
-      PORT: 3000
+      AWS_SECRETS_MANAGER_API_KEY_SECRET: rest-api-serverless-dev/api-key
 
     steps:
       - name: Checkout
@@ -79,8 +79,8 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
           role-to-assume: ${{ env.OIDC_IAM_ROLE }}
 
-      - name: Deploy rest-api-ecs
-        run: npm run deploy --scope=@capturedlabs/rest-api-ecs
+      - name: Deploy rest-api-serverless
+        run: npx lerna run deploy --scope=@capturedlabs/rest-api-serverless
 
   integration-test-dev:
     runs-on: ubuntu-latest
@@ -112,4 +112,4 @@ jobs:
           role-to-assume: ${{ env.OIDC_IAM_ROLE }}
 
       - name: Integration Test
-        run: npm run test:integration
+        run: npx lerna run test:integration --scope=@capturedlabs/rest-api-serverless
